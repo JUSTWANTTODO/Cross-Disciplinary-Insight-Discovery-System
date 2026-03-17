@@ -1,131 +1,229 @@
-## **Silo Synapse – Key Points (Keywords)**
+# Silo Synapse
 
-### **Purpose**
+Silo Synapse is an agentic AI research assistant that helps generate **non-obvious, testable cross-disciplinary hypotheses** from user input (text or PDF), grounded in live scientific literature.
 
-* Cross-disciplinary research discovery
-* Non-obvious hypothesis generation
-* Literature-grounded ideation
-* Researcher-in-the-loop AI
+It combines:
+- input cleaning and preprocessing
+- live paper retrieval (arXiv + PubMed)
+- semantic ranking via embeddings
+- hypothesis generation via Gemini on Vertex AI
+- heuristic confidence scoring
+- iterative refinement workflow in a Streamlit UI
 
----
+## What This Project Does
 
-### **Core Problem**
+1. Accepts research context from the user (text area or uploaded PDF).
+2. Cleans and normalizes that text.
+3. Rewrites it into a clearer search query.
+4. Fetches recent/relevant papers from arXiv and PubMed.
+5. Ranks papers by embedding similarity to the user input.
+6. Generates structured hypotheses using an LLM.
+7. Adds insight badges and confidence labels.
+8. Supports iterative follow-up exploration up to multiple rounds.
 
-* Knowledge silos
-* Keyword-based search limitations
-* Lack of hypothesis-level tools
-* Poor novelty explainability
+## Features
 
----
+- Text input and PDF upload flow
+- Live multi-source literature search
+- Embedding-based paper ranking
+- Structured JSON hypothesis generation
+- Insight badges for novelty framing
+- Confidence scoring (heuristic)
+- Recommended-hypothesis tagging
+- Suggested next-focus guidance
+- Streamlit session state for iterative exploration
+- Dockerized runtime for deployment
 
-### **System Features**
+## Project Structure
 
-* Agentic reasoning
-* Live literature retrieval
-* Semantic ranking (embeddings)
-* Hypothesis synthesis
-* Novelty interpretation
+```text
+.
+|-- app.py
+|-- check_models.py
+|-- Dockerfile
+|-- requirements.txt
+|-- agents/
+|   |-- __init__.py
+|   `-- research_agent.py
+|-- landing/
+|   `-- index.html
+|-- services/
+|   |-- __init__.py
+|   |-- confidence_service.py
+|   |-- embedding_service.py
+|   |-- genai_client.py
+|   |-- insight_service.py
+|   |-- intent_service.py
+|   `-- live_search_service.py
+`-- utils/
+    |-- pdf_parser.py
+    `-- text_cleaner.py
+```
 
----
+## Module-by-Module Breakdown
 
-### **Input**
+### `app.py`
+Main Streamlit application. Handles UI, session state, query flow, paper display, hypothesis rendering, confidence display, and iterative exploration.
 
-* Research idea (text)
-* Academic PDF
-* Noisy / partial inputs supported
+### `agents/research_agent.py`
+Builds the prompt and calls Gemini (`gemini-2.5-flash-lite`) to generate structured hypothesis output.
 
----
+### `services/genai_client.py`
+Provides cached Vertex AI Gemini client initialization.
 
-### **Pipeline**
+### `services/intent_service.py`
+Converts raw user input into a clearer academic search query.
 
-* Text cleaning
-* Intent normalization
-* arXiv + PubMed search
-* Embedding-based ranking
-* Hypothesis generation
-* Insight annotation
+### `services/live_search_service.py`
+Fetches papers from:
+- arXiv API
+- PubMed E-utilities API
 
----
+Parses responses and returns unified paper objects.
 
-### **Hypothesis Output**
+### `services/embedding_service.py`
+Embeds query and abstract chunks using `text-embedding-004`, computes cosine similarity, and ranks papers.
 
-* Title
-* Testable hypothesis
-* Disciplines involved
-* Conceptual rationale
-* Supporting evidence
+### `services/insight_service.py`
+Generates short novelty/insight badges for each hypothesis and safely extracts JSON output.
 
----
+### `services/confidence_service.py`
+Computes a heuristic confidence score from:
+- evidence count
+- intent alignment (similarity fallback)
+- interdisciplinarity signal
 
-### **Insight Badges**
+### `utils/pdf_parser.py`
+Extracts text from PDFs and removes repeated lines (common header/footer noise).
 
-* Assumption Shift
-* Domain Transfer
-* Individual → Population
-* Actionability Gain
-* Non-obviousness signal
+### `utils/text_cleaner.py`
+Removes references, citations, noisy symbols, normalizes whitespace, and truncates text to bounded length.
 
----
+### `check_models.py`
+Standalone utility script to list available Gemini models using `GEMINI_API_KEY`.
 
-### **Confidence Scoring**
+### `landing/index.html`
+Static landing page (Tailwind + custom styling) that links to deployed app URL.
 
-* Evidence strength
-* Intent alignment
-* Interdisciplinarity
-* Exploratory / Moderate / High
+## Technologies Used
 
----
+### Language and Framework
+- Python 3.11
+- Streamlit
 
-### **Exploration Mode**
+### AI / LLM / Embeddings
+- Google Gemini models
+- Vertex AI integration (`google.genai` via Vertex)
+- `gemini-2.5-flash-lite` (generation and intent)
+- `text-embedding-004` (embedding similarity)
 
-* Iterative refinement
-* Context-preserving agent
-* Multi-step hypothesis evolution
+### Data Sources
+- arXiv API (`export.arxiv.org`)
+- PubMed E-utilities (`esearch.fcgi`, `efetch.fcgi`)
 
----
+### Libraries
+- `streamlit`
+- `python-dotenv`
+- `requests`
+- `pypdf`
+- `numpy` (declared dependency)
+- `google-cloud-aiplatform`
+- `vertexai`
 
-### **Technology Stack**
+### Frontend (Landing Page)
+- HTML5
+- Tailwind CSS (CDN)
+- Google Fonts
+- Material Symbols
 
-* Streamlit UI
-* Python services
-* Vertex AI (Gemini)
-* Embeddings-based similarity
-* Modular agent architecture
+### DevOps / Runtime
+- Docker (`python:3.11-slim`)
+- Streamlit server on port `8080`
 
----
+## Environment Variables
 
-### **Design Principles**
+Create a `.env` file in the project root.
 
-* Agent-first
-* Explainable novelty
-* Cost-aware execution
-* Human judgment preserved
+For the Streamlit app (Vertex AI path):
 
----
+```env
+GCP_PROJECT_ID=your-gcp-project-id
+```
 
-### **Use Cases**
+For `check_models.py` utility script:
 
-* Research ideation
-* Grant brainstorming
-* Cross-domain discovery
-* Academic exploration
-* Hackathon demos
+```env
+GEMINI_API_KEY=your-gemini-api-key
+```
 
----
+Note: The main app client uses Vertex AI (`GCP_PROJECT_ID`), while `check_models.py` uses API key auth.
 
-### **Limitations**
+## Installation and Run (Local)
 
-* Exploratory outputs
-* Not experimentally validated
-* Literature-dependent coverage
+1. Create and activate virtual environment.
+2. Install dependencies.
+3. Add `.env` variables.
+4. Run Streamlit app.
 
----
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-### **Value Proposition**
+Default local app URL is usually:
+- `http://localhost:8501`
 
-* Faster ideation
-* Clear novelty signals
-* Reduced cognitive load
-* Research-ready insights
+## Run With Docker
 
+Build image:
 
+```bash
+docker build -t silo-synapse .
+```
+
+Run container:
+
+```bash
+docker run --rm -p 8080:8080 --env-file .env silo-synapse
+```
+
+App will be available at:
+- `http://localhost:8080`
+
+## High-Level Request Flow
+
+```text
+User Input (Text/PDF)
+    -> clean_text / extract_text_from_pdf
+    -> normalize_intent
+    -> unified_search (arXiv + PubMed)
+    -> rank_papers_by_similarity (embeddings)
+    -> generate_hypotheses (Gemini)
+    -> generate_insight_badges
+    -> compute_confidence
+    -> Streamlit render + optional iterative refinement
+```
+
+## Known Constraints
+
+- Confidence is heuristic, not statistical certainty.
+- Live search quality depends on external API availability and response quality.
+- Model output parsing currently relies on structured text patterns/JSON-like output.
+- Evidence and rationale consistency depends on model adherence to prompt format.
+
+## Future Improvements
+
+- Strict schema validation (`json.loads` + Pydantic) for hypothesis output
+- Better parser instead of string-splitting blocks in UI
+- Add unit tests for services
+- Add retry/backoff policies per external API type
+- Add caching for search results and embeddings across sessions
+- Add observability/logging for failed generations
+
+## Disclaimer
+
+Outputs are exploratory research hypotheses, not validated scientific conclusions. Evidence references may be incomplete or context-dependent. Confidence labels indicate heuristic relevance, not empirical proof.
+
+## License
+
+No explicit license file is currently present in the repository. Add a `LICENSE` file if you want open-source licensing terms.
