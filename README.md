@@ -190,6 +190,40 @@ docker run --rm -p 8080:8080 --env-file .env silo-synapse
 App will be available at:
 - `http://localhost:8080`
 
+
+## Deployment (GCP)
+
+This project is deployed on Google Cloud Run.
+
+### Production URL
+
+- `https://silo-synapse-678541121222.us-central1.run.app/`
+
+### GCP Services Used
+
+- Cloud Run (container hosting)
+- Artifact Registry (container image storage, if used in your setup)
+- Vertex AI (Gemini + embeddings)
+
+### Deploy to Cloud Run
+
+Example deployment flow:
+
+```bash
+gcloud auth login
+gcloud config set project YOUR_GCP_PROJECT_ID
+gcloud builds submit --tag gcr.io/YOUR_GCP_PROJECT_ID/silo-synapse
+gcloud run deploy silo-synapse \
+    --image gcr.io/YOUR_GCP_PROJECT_ID/silo-synapse \
+    --platform managed \
+    --region us-central1 \
+    --allow-unauthenticated \
+    --port 8080 \
+    --set-env-vars GCP_PROJECT_ID=YOUR_GCP_PROJECT_ID
+```
+
+After deployment, Cloud Run provides a service URL you can use publicly.
+
 ## High-Level Request Flow
 
 ```text
