@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Silo Synapse - Research AI</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "primary-glow": "#00d2ff",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0a0a0c", 
+                        "card-glass": "rgba(255, 255, 255, 0.03)",
+                        "border-glass": "rgba(255, 255, 255, 0.08)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"]
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background-color: #000;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: radial-gradient(circle at top center, rgba(19, 91, 236, 0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+        .glass-card:hover {
+            border-color: rgba(19, 91, 236, 0.3);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 40px -10px rgba(19, 91, 236, 0.3);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #135bec 0%, #00d2ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .btn-gradient {
+            background: linear-gradient(90deg, #135bec 0%, #00b4d8 100%);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            z-index: 1;
+        }
+        .btn-gradient:hover {
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.6);
+            filter: brightness(1.15);
+            transform: translateY(-3px) scale(1.02);
+        }
+        .math-symbol {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.03);
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+            transition: opacity 1s ease;
+        }
+        .geo-shape {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .animate-delay-100 { animation-delay: 100ms; }
+        .animate-delay-200 { animation-delay: 200ms; }
+        .animate-delay-300 { animation-delay: 300ms; }
+        .animate-delay-400 { animation-delay: 400ms; }
+        .animate-delay-500 { animation-delay: 500ms; }
+        .animate-delay-600 { animation-delay: 600ms; }
+        .animate-delay-700 { animation-delay: 700ms; }
+        .animate-delay-800 { animation-delay: 800ms; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-black via-[#08080a] to-[#0f0f11] text-white min-h-screen flex flex-col relative">
+<div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+<div class="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-primary/10 rounded-full blur-[160px] opacity-20 animate-pulse-slow"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[55vw] h-[55vw] bg-primary-glow/5 rounded-full blur-[140px] opacity-15 animate-pulse-slow" style="animation-delay: 2s;"></div>
+<div class="geo-shape rounded-full w-96 h-96 top-[-5%] right-[20%] opacity-10"></div>
+<div class="geo-shape w-64 h-64 border border-white/5 rotate-45 top-[35%] left-[-8%] opacity-5"></div>
+<div class="geo-shape w-80 h-80 rounded-full border-dashed border-white/5 bottom-[15%] right-[22%] opacity-10"></div>
+<div class="geo-shape w-[600px] h-[600px] border border-white/5 rounded-full top-[10%] left-[20%] opacity-[0.02]"></div>
+<div class="geo-shape w-40 h-40 border-2 border-primary/10 rounded-lg rotate-12 top-[60%] right-[5%] opacity-10 animate-float"></div>
+<div class="geo-shape w-32 h-32 border border-white/5 rounded-full top-[20%] right-[40%] opacity-[0.05]"></div>
+<div class="absolute top-[50%] left-[50%] w-[800px] h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-1/2 rotate-45 opacity-20"></div>
+<div class="math-symbol text-7xl top-[12%] left-[8%] rotate-[-12deg]">∇·E = ρ/ε₀</div>
+<div class="math-symbol text-9xl bottom-[10%] left-[2%] rotate-[8deg] opacity-[0.04]">∂L/∂θ</div>
+<div class="math-symbol text-6xl top-[22%] right-[8%] rotate-[6deg]">P(A|B)</div>
+<div class="math-symbol text-8xl bottom-[25%] right-[5%] rotate-[-8deg] opacity-[0.04]">Σ wᵢxᵢ + b</div>
+<div class="math-symbol text-5xl top-[45%] left-[12%] opacity-[0.03] rotate-[15deg]">∫ eˣ dx</div>
+<div class="math-symbol text-6xl bottom-[5%] left-[35%] opacity-[0.03]">H(X)</div>
+<div class="math-symbol text-4xl top-[8%] right-[32%] opacity-[0.03] rotate-[-5deg]">f(x) = x²</div>
+<div class="math-symbol text-5xl bottom-[45%] right-[30%] opacity-[0.03] rotate-[20deg]">lim x→∞</div>
+<div class="math-symbol text-8xl top-[40%] right-[10%] opacity-[0.02] rotate-[-15deg]">√π</div>
+<div class="math-symbol text-6xl top-[60%] left-[5%] opacity-[0.02] rotate-[10deg]">e^{i\pi} + 1 = 0</div>
+</div>
+<main class="relative z-10 flex-grow flex flex-col items-center justify-center px-4 md:px-8 py-12 md:py-20 max-w-7xl mx-auto w-full">
+<div class="flex flex-col items-center text-center space-y-6 max-w-4xl mb-16 md:mb-24 opacity-0 animate-fade-in-up">
+<div class="inline-flex items-center justify-center px-5 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl hover:border-primary/30 transition-colors duration-300">
+<span class="material-symbols-outlined text-sm mr-2 text-primary-glow">science</span>
+<span class="text-xs font-mono font-medium text-gray-300 tracking-wider uppercase">Research AI</span>
+</div>
+<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight pb-2 drop-shadow-2xl">
+<span class="text-gradient">Silo Synapse</span>
+</h1>
+<p class="text-lg md:text-xl text-gray-400 font-light max-w-2xl leading-relaxed">
+                Discover non-obvious research hypotheses across scientific disciplines.
+            </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mb-20 md:mb-32">
+<div class="glass-card rounded-[32px] p-6 md:p-8 flex flex-col opacity-0 animate-fade-in-up animate-delay-200 group cursor-default">
+<div class="relative z-10">
+<div class="mb-5 text-primary/80 group-hover:text-primary transition-colors duration-300 transform group-hover:scale-110 origin-left">
+<span class="material-symbols-outlined text-4xl">psychology_alt</span>
+</div>
+<h3 class="text-xl font-semibold mb-3 text-white/90 group-hover:text-white transition-colors">Problem</h3>
+<p class="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
+                        Breakthrough ideas remain hidden inside academic silos, disconnected from broader contexts.
+                    </p>
+</div>
+</div>
+<div class="glass-card rounded-[32px] p-6 md:p-8 flex flex-col opacity-0 animate-fade-in-up animate-delay-300 group cursor-default">
+<div class="relative z-10">
+<div class="mb-5 text-primary-glow/80 group-hover:text-primary-glow transition-colors duration-300 transform group-hover:scale-110 origin-left">
+<span class="material-symbols-outlined text-4xl">hub</span>
+</div>
+<h3 class="text-xl font-semibold mb-3 text-white/90 group-hover:text-white transition-colors">AI Insight Engine</h3>
+<p class="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
+                        Connects distant fields to generate novel hypotheses using high-dimensional vector mapping.
+                    </p>
+</div>
+</div>
+<div class="glass-card rounded-[32px] p-6 md:p-8 flex flex-col opacity-0 animate-fade-in-up animate-delay-400 group cursor-default">
+<div class="relative z-10">
+<div class="mb-5 text-primary/80 group-hover:text-primary transition-colors duration-300 transform group-hover:scale-110 origin-left">
+<span class="material-symbols-outlined text-4xl">menu_book</span>
+</div>
+<h3 class="text-xl font-semibold mb-3 text-white/90 group-hover:text-white transition-colors">Research-Grounded</h3>
+<p class="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
+                        Anchored in real scientific literature, ensuring all outputs trace back to peer-reviewed sources.
+                    </p>
+</div>
+</div>
+<div class="glass-card rounded-[32px] p-6 md:p-8 flex flex-col opacity-0 animate-fade-in-up animate-delay-500 group cursor-default">
+<div class="relative z-10">
+<div class="mb-5 text-primary-glow/80 group-hover:text-primary-glow transition-colors duration-300 transform group-hover:scale-110 origin-left">
+<span class="material-symbols-outlined text-4xl">explore</span>
+</div>
+<h3 class="text-xl font-semibold mb-3 text-white/90 group-hover:text-white transition-colors">Exploration-Focused</h3>
+<p class="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
+                        Designed for curiosity, not just confirmation. Find the questions you didn't know to ask.
+                    </p>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-center text-center max-w-2xl opacity-0 animate-fade-in-up animate-delay-600">
+<div class="mb-12 relative">
+<div class="absolute -left-8 -top-8 text-gray-700 opacity-20 select-none text-8xl font-serif">"</div>
+<p class="text-xl md:text-2xl text-gray-300 font-light leading-relaxed px-4">
+                    Most scientific breakthroughs happen between disciplines, <span class="text-white font-medium italic drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">not within them</span>.
+                </p>
+<div class="absolute -right-8 -bottom-12 text-gray-700 opacity-20 select-none text-8xl font-serif rotate-180">"</div>
+</div>
+<a
+  href="https://silo-synapse-678541121222.us-central1.run.app/"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="btn-gradient px-12 py-5 rounded-full text-white font-semibold text-lg flex items-center gap-3 group mb-8 shadow-xl"
+>
+  <span>Launch App</span>
+  <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform duration-300 text-sm">
+    arrow_forward
+  </span>
+</a>
+<div class="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity cursor-default animate-pulse-slow">
+<span class="material-symbols-outlined text-[16px] text-primary-glow">memory</span>
+<span class="text-xs font-mono text-gray-400">Built using Vertex AI</span>
+</div>
+</div>
+</main>
+<footer class="relative z-10 w-full glass-panel border-t border-white/5 mt-auto opacity-0 animate-fade-in-up animate-delay-800">
+<div class="max-w-7xl mx-auto px-4 py-8 md:px-8">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+<div class="max-w-3xl">
+<p class="text-[10px] md:text-xs text-gray-500 leading-relaxed mb-1">
+<span class="font-semibold text-gray-400">Disclaimer:</span> Outputs are exploratory research hypotheses and not validated scientific conclusions. Evidence references may be incomplete or context-dependent. Confidence scores represent heuristic estimations of relevance, not empirical certainty.
+                    </p>
+</div>
+<div class="shrink-0">
+<p class="text-[10px] md:text-xs text-gray-600 font-mono">
+                        © 2025 Silo Synapse. All rights reserved.
+                    </p>
+</div>
+</div>
+</div>
+</footer>
+
+</body></html>
