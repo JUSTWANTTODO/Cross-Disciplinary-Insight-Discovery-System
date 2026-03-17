@@ -257,8 +257,3 @@ User Input (Text/PDF)
 ## Disclaimer
 
 Outputs are exploratory research hypotheses, not validated scientific conclusions. Evidence references may be incomplete or context-dependent. Confidence labels indicate heuristic relevance, not empirical proof.
-
-## License
-
-No explicit license file is currently present in the repository. Add a `LICENSE` file if you want open-source licensing terms.
- repository. Add a `LICENSE` file if you want open-source licensing terms.
