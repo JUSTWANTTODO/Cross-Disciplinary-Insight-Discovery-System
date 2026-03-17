@@ -12,9 +12,8 @@ import streamlit as st
 from dotenv import load_dotenv
 load_dotenv()
 
-# --------------------------------------------------
+
 # Cached Agent Call
-# --------------------------------------------------
 @st.cache_data(show_spinner=False)
 def cached_generate_hypotheses(user_input, ranked_papers, max_hypotheses):
     return generate_hypotheses(
@@ -24,9 +23,7 @@ def cached_generate_hypotheses(user_input, ranked_papers, max_hypotheses):
     )
 
 
-# --------------------------------------------------
 # Agent Session Memory
-# --------------------------------------------------
 if "iteration" not in st.session_state:
     st.session_state.iteration = 1
 
@@ -46,9 +43,7 @@ if "has_results" not in st.session_state:
     st.session_state.has_results = False
 
 
-# --------------------------------------------------
 # Page config
-# --------------------------------------------------
 st.set_page_config(page_title="Silo Synapse", layout="wide")
 
 left, center, right = st.columns([1, 2, 1])
@@ -63,9 +58,8 @@ with center:
     )
     st.markdown("---")
 
-    # --------------------------------------------------
+   
     # Input
-    # --------------------------------------------------
     st.markdown("### Provide Your Research Input")
 
     input_mode = st.radio("Input Type", ["Text Input", "PDF Upload"], horizontal=True)
@@ -127,9 +121,7 @@ with center:
 
 
 
-    # --------------------------------------------------
     # Initial Results
-    # --------------------------------------------------
     if st.session_state.has_results and st.session_state.ranked_papers:
 
         st.markdown("---")
@@ -324,9 +316,8 @@ with center:
         unsafe_allow_html=True
     )
 
-        # --------------------------------------------------
+
         # Continue Exploration
-        # --------------------------------------------------
         st.markdown("### Continue Exploration")
 
         refinement_instruction = st.text_area(
@@ -349,9 +340,7 @@ with center:
             st.session_state.iteration += 1
             st.rerun()
 
-        # --------------------------------------------------
-        # 🔽 NEW OUTPUT APPEARS BELOW (FIX)
-        # --------------------------------------------------
+        #  NEW OUTPUT APPEARS BELOW 
         if st.session_state.refined_output:
             st.markdown("---")
             st.markdown(
@@ -373,9 +362,7 @@ with center:
                     del st.session_state[k]
             st.rerun()
 
-# --------------------------------------------------
-# Fixed Footer (Professional, Always Visible)
-# --------------------------------------------------
+# Fixed Footer 
 st.markdown(
     """
     <style>
